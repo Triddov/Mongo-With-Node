@@ -16,6 +16,3 @@ router.delete("/posts/:id", postController.delete)
 
 
 export default router
-
-
-
