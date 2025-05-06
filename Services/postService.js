@@ -1,8 +1,10 @@
 import Post from "../postScheme.js";
+import fileService from "./fileService.js";
 
 class PostService{
-    async create(post){
-        const createdPost = await Post.create(post)
+    async create(post, picture){
+        const fileName = fileService.saveFile(picture)
+        const createdPost = await Post.create({...post, picture: fileName})
         return createdPost
     }
 
@@ -27,11 +29,11 @@ class PostService{
         return updatedPost
     }
 
-    async delete(req, res){
+    async delete(id){
         if (!id) {
             throw new Error("id not found")
         }
-        const post = await Post.findByIdAndDelete(id)
+        const post = await Post.findByIdAndDelete(id, {new: true})
         return post
     }
 }

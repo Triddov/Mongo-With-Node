@@ -1,12 +1,12 @@
-import Post from "../postScheme.js";
+import PostService from "../Services/postService.js";
+import postService from "../Services/postService.js";
 
 class PostController {
 
     async create(req, res){
         try {
-            const {author, title, content, picture} = req.body
-            const post = await Post.create({author, title, content, picture})
-            res.status(201).json(post)
+            const post = await PostService.create(req.body, req.files.picture)
+            return res.status(201).json(post)
 
         } catch (err) {
             res.status(500).json(err.message)
@@ -15,12 +15,7 @@ class PostController {
 
     async getOne(req, res){
         try {
-            const { id } = req.params
-            if (!id) {
-                res.status(400).json({errMessage: "post id not found"})
-            }
-
-            const post = await Post.findById(id)
+            const post = await PostService.getOne(req.params.id)
             return res.status(200).json(post)
 
         } catch (err) {
@@ -30,7 +25,7 @@ class PostController {
 
     async getAll(req, res){
         try {
-            const posts = await Post.find()
+            const posts = await PostService.getAll()
             return res.status(200).json(posts)
 
         } catch (err) {
@@ -40,14 +35,9 @@ class PostController {
 
     async update(req, res){
         try {
-            const post = req.body
-            if (!post._id) {
-                res.status(400).json({errMessage: "post id not found"})
-            }
-
-            const updatedPost = await Post.findByIdAndUpdate(post._id, post, {new: true})
+            const updatedPost = await PostService.update(req.body)
             return res.status(200).json(updatedPost)
-        //     если бы мы ничего не возврашали, я бы поставил 204 статус
+        //     если бы мы ничего не возврашали, я бы поставил 204 "no content"
 
         } catch (err) {
             res.status(500).json(err.message)
@@ -56,19 +46,13 @@ class PostController {
 
     async delete(req, res){
         try {
-            const { id } = req.params
-            if (!id) {
-                res.status(400).json({errMessage: "post id not found"})
-            }
-
-            const post = await Post.findByIdAndDelete(id)
+            const post = postService.delete(req.params.id)
             return res.status(200).json(post)
 
         } catch (err) {
             res.status(500).json(err.message)
         }
     }
-
 }
 
 
