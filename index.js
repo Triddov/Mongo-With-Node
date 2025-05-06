@@ -1,6 +1,7 @@
 import express from 'express'
 import mongoose from 'mongoose'
 import dotenv from 'dotenv'
+import fileUpload from 'express-fileupload'
 import router from './Routes/router.js'
 
 dotenv.config()
@@ -11,6 +12,7 @@ const app = express()
 
 app.use(express.json()) // подключение middleware на парсинг json-ов
 app.use(express.static('static'))
+app.use(fileUpload({ }))
 app.use("/api", router) // регистрация роутера
 
 
